@@ -8,7 +8,7 @@ producer = KafkaProducer(
 )
 
 # Membaca file CSV
-data = pd.read_csv("../data/Property Sales of Melbourne City.csv")
+data = pd.read_csv("../data/Processed Property Sales.csv")
 
 # Mengirim data ke Kafka
 for _, row in data.iterrows():
