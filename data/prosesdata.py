@@ -78,7 +78,16 @@ def train_model():
     # Evaluasi Random Forest
     y_pred = rf_model.predict(X_test)
     mse = mean_squared_error(y_test, y_pred)
+    r2 = rf_model.score(X_test, y_test)  # Menghitung R²
+
+    # Menghitung Adjusted R²
+    n = X_test.shape[0]  # Jumlah sampel
+    p = X_test.shape[1]  # Jumlah fitur
+    adjusted_r2 = 1 - ((1 - r2) * (n - 1) / (n - p - 1))
+
     print(f"Random Forest MSE: {mse}")
+    print(f"Random Forest R²: {r2}")
+    print(f"Random Forest Adjusted R²: {adjusted_r2}")
 
     # Simpan model Random Forest sebagai .pkl
     rf_model_filename = 'random_forest_model.pkl'
