@@ -1,34 +1,33 @@
 from confluent_kafka import Producer
 import pandas as pd
+import json
+import time
 
-# Konfigurasi Kafka
 producer_config = {
-    'bootstrap.servers': 'localhost:9092',  # Alamat Kafka broker
+    'bootstrap.servers': 'localhost:9092',
 }
 
 producer = Producer(producer_config)
 
-# Callback untuk delivery report
 def delivery_report(err, msg):
     if err is not None:
         print(f"Message delivery failed: {err}")
     else:
-        print(f"Message delivered to {msg.topic()} [{msg.partition()}]")
+        print(f"Message delivered to {msg.topic()} [{msg.partition()}] offset {msg.offset()}")
 
-# Membaca file CSV
-data = pd.read_csv("../data/Processed Property Sales.csv")
+data = pd.read_csv("../data/Property Sales of Melbourne City.csv")
 
-# Mengirim data ke Kafka
 for _, row in data.iterrows():
-    value = row.to_dict()  # Data dalam format dictionary
+    value = json.dumps(row.to_dict())  # Serialize dictionary ke JSON string
+    key = str(row.get('UniqueID', 'default_key'))  # Gunakan kolom kunci
     producer.produce(
         'property-sales',
-        key=str(row.get('UniqueID', 'default_key')),  # Ganti 'UniqueID' dengan kolom kunci Anda
-        value=str(value),  # Convert dictionary ke string
+        key=key,
+        value=value,
         callback=delivery_report
     )
+    print(f"Sending data: {value}")
+    time.sleep(0.3)
 
-# Pastikan semua pesan terkirim
 producer.flush()
 print("All messages have been sent.")
-
