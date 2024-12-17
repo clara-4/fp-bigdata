@@ -21,4 +21,8 @@ Output Consumer :
 Tampilan bucket di miniO :
 <img width="956" alt="image" src="https://github.com/user-attachments/assets/841b7ed1-a5c4-41dc-98c2-4374584a892d" />
 
+Running modelling :
+<img width="589" alt="image" src="https://github.com/user-attachments/assets/62ac85b3-7af8-4317-8e55-407dc1e013ef" />
+
+
 
