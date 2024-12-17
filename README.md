@@ -11,14 +11,14 @@
 
 
 Output Producer :
-<img width="833" alt="image" src="https://github.com/user-attachments/assets/c2777451-ace2-489a-aaba-477bbb438252">
+![image](https://github.com/user-attachments/assets/e2db866a-d2b1-4e55-84c8-7da3a61869d3)
+
 
 Output Consumer :
-<img width="822" alt="image" src="https://github.com/user-attachments/assets/64207452-4262-4cbb-b3cc-735bc5d05a02">
+<img width="602" alt="image" src="https://github.com/user-attachments/assets/752bc0f9-3fe0-4c37-bdb8-2556b69ee30f" />
 
-Tampilan ngrok :
-<img width="959" alt="image" src="https://github.com/user-attachments/assets/75484c89-7f14-4354-87c0-8c622a841d86">
 
 Tampilan bucket di miniO :
-<img width="959" alt="image" src="https://github.com/user-attachments/assets/5a6b30a9-be2d-447c-9a3a-dfe178f65668">
+<img width="956" alt="image" src="https://github.com/user-attachments/assets/841b7ed1-a5c4-41dc-98c2-4374584a892d" />
+
 
