@@ -12,6 +12,9 @@
 
 Final Project ini menggunakan dataset penjualan properti di kota Melbourne, Australia. Kami mengangkat masalah bahwa saat ini banyak rumah yang dijual namun harga dan spesifikasinya berbeda-beda, di sini kami merekomendasikan solusi untuk membuat rekomendasi rumah berdasarkan budget dan spesifikasi yang diiinginkan.
 
+## Arsitektur Data
+![flow big data](https://github.com/user-attachments/assets/9900e79d-8671-4572-867b-871c1e3b3784)
+
 
 ## Alur Kerja
 1. Pertama buat file ` docker-compose.yml ` yang berisi [code ini](kafka/docker-compose.yml).
