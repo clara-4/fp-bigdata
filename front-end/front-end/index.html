@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HomeSweetHome</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-800 text-white">
+  <header class="bg-gray-900 py-4">
+    <div class="container mx-auto flex justify-between items-center px-4">
+      <h1 class="text-2xl font-bold">HomeSweetHome</h1>
+      <nav>
+        <ul class="flex space-x-6">
+          <li><a href="#" class="hover:text-yellow-400">Rekomendasi</a></li>
+          <li><a href="#" class="hover:text-yellow-400">Harga</a></li>
+          <li><a href="#" class="hover:text-yellow-400">Tentang Kami</a></li>
+          <li><a href="#" class="hover:text-yellow-400">Kontak Kami</a></li>
+        </ul>
+      </nav>
+      <div>
+        <input type="text" placeholder="Cari" class="bg-gray-800 text-white placeholder-gray-400 px-4 py-2 rounded focus:outline-none" />
+      </div>
+    </div>
+  </header>
+
+  <main class="relative bg-cover bg-center min-h-screen mt-8" style="background-image: url('home.jpg');">
+    <div class="absolute inset-0 bg-black bg-opacity-60"></div>
+    <div class="relative container mx-auto flex items-center justify-center h-full px-4">
+      <div class="text-center bg-black bg-opacity-70 p-8 rounded-lg w-full max-w-4xl">
+        <h2 class="text-3xl md:text-5xl font-bold mb-8">
+          Selamat Datang di <span class="text-yellow-400">HomeSweetHome!</span>
+        </h2>
+        <div class="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4 items-center justify-center mb-8">
+          <!-- Tipe -->
+          <div class="flex flex-col text-left w-full md:w-auto">
+            <label for="tipe" class="mb-2 text-sm font-medium">Tipe</label>
+            <select id="tipe" class="bg-gray-800 text-white px-4 py-2 rounded border border-gray-700 focus:outline-none focus:border-yellow-400 w-full">
+              <option value="">Pilih Tipe</option>
+              <option value="house">House</option>
+              <option value="townhouse">Townhouse</option>
+              <option value="unit">Unit</option>
+            </select>
+          </div>
+          <!-- Jarak -->
+          <div class="flex flex-col text-left w-full md:w-auto">
+            <label for="jarak" class="mb-2 text-sm font-medium">Jarak (km)</label>
+            <input type="number" id="jarak" placeholder="Exact distance" class="bg-gray-800 text-white px-4 py-2 rounded border border-gray-700 focus:outline-none focus:border-yellow-400 w-full" />
+          </div>
+          <!-- Luas -->
+          <div class="flex flex-col text-left w-full md:w-auto">
+            <label for="luas" class="mb-2 text-sm font-medium">Luas (m²)</label>
+            <input type="number" id="luas" placeholder="Exact building area" class="bg-gray-800 text-white px-4 py-2 rounded border border-gray-700 focus:outline-none focus:border-yellow-400 w-full" />
+          </div>
+          <!-- Jumlah Ruangan -->
+          <div class="flex flex-col text-left w-full md:w-auto">
+            <label for="jml-ruangan" class="mb-2 text-sm font-medium">Jumlah Ruangan</label>
+            <select id="jml-ruangan" class="bg-gray-800 text-white px-4 py-2 rounded border border-gray-700 focus:outline-none focus:border-yellow-400 w-full">
+              <option value="">Pilih Jumlah</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="13">13</option>
+              <option value="14">14</option>
+              <option value="15">15</option>
+            </select>
+          </div>
+          <button id="search-button" class="bg-yellow-500 hover:bg-yellow-600 text-black font-medium px-6 py-3 rounded transition w-full md:w-auto">
+            Cari Rumah Idamanmu!
+          </button>
+        </div>
+        <div id="results" class="mt-8 p-4 bg-gray-900 rounded text-white">
+          <h3 class="text-xl font-bold mb-4">Hasil Pencarian</h3>
+          <div id="results-container" class="space-y-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Data akan dimasukkan di sini oleh JavaScript -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById('search-button').addEventListener('click', async () => {
+  // Collect input values
+  const params = {
+    rooms: document.getElementById('rooms').value,
+    bedroom2: document.getElementById('bedroom2').value,
+    luasgedung: document.getElementById('luasgedung').value,
+    jarak: document.getElementById('jarak').value,
+    harga: document.getElementById('harga').value
+  };
+
+  try {
+    // Construct query string, filtering out empty parameters
+    const queryParams = new URLSearchParams(
+      Object.fromEntries(
+        Object.entries(params).filter(([_, v]) => v !== '')
+      )
+    );
+    
+    const response = await fetch(`/api/houses?${queryParams}`);
+    const data = await response.json();
+    const resultsContainer = document.getElementById('results-container');
+    resultsContainer.innerHTML = ''; // Clear previous results
+
+    if (data.length === 0) {
+      resultsContainer.innerHTML = '<p class="text-yellow-400 col-span-full text-center">Tidak ada data ditemukan.</p>';
+    } else {
+      data.forEach(house => {
+        const houseDiv = document.createElement('div');
+        houseDiv.classList.add('p-4', 'bg-gray-800', 'rounded', 'shadow');
+        houseDiv.innerHTML = `
+          <h4 class="text-lg font-bold mb-2">Cluster: ${house.cluster}</h4>
+          <div class="space-y-1">
+            <p><strong>Rooms:</strong> ${house.Rooms}</p>
+            <p><strong>Bedroom:</strong> ${house.Bedroom2}</p>
+            <p><strong>Luas Gedung:</strong> ${house.BuildingArea} m²</p>
+            <p><strong>Jarak:</strong> ${house.Distance.toFixed(1)} km</p>
+            <p><strong>Harga:</strong> Rp ${house.Price.toLocaleString()}</p>
+          </div>
+        `;
+        resultsContainer.appendChild(houseDiv);
+      });
+    }
+  } catch (error) {
+    console.error('Error fetching filtered data:', error);
+    document.getElementById('results-container').innerHTML = 
+      '<p class="text-red-500 col-span-full text-center">Terjadi kesalahan.</p>';
+  }
+});
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Styles */
+.navbar {
+  @apply flex justify-between items-center bg-gray-800 text-white px-6 py-4;
+}
+
+.navbar ul {
+  @apply flex space-x-6;
+}
+
+.navbar a {
+  @apply hover:text-yellow-400;
+}
+
+.hero-section {
+  @apply relative bg-cover bg-center min-h-screen flex items-center justify-center mt-16 px-4; /* Added mt-16 for margin from navbar and px-4 for side padding */
+  max-width: 1800px; /* Added max-width for better readability */
+  margin-left: auto; /* Center the hero section */
+  margin-right: auto; /* Center the hero section */
+}
+
+.hero-overlay {
+  @apply absolute inset-0 bg-white bg-opacity-50;
+}
+
+.hero-content {
+  @apply relative bg-white bg-opacity-75 text-center text-white p-8 rounded-lg w-full md:w-3/4 lg:w-2/3; /* Added responsive width */
+}
+
+.hero-title {
+  @apply text-4xl md:text-5xl font-bold mb-6;
+}
+
+.hero-highlight {
+  @apply text-yellow-400;
+}
+
+.form-container {
+  @apply flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4;
+}
+
+.dropdown {
+  @apply flex flex-col text-left;
+}
+
+.dropdown select {
+  @apply bg-gray-700 text-white px-4 py-2 rounded border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-400;
+}
+
+.button-primary {
+  @apply bg-yellow-500 hover:bg-yellow-600 text-black font-medium px-6 py-3 rounded transition;
+}
