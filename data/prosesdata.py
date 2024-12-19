@@ -1,13 +1,12 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error
 import pickle
 import boto3
 import io
 import os
-import time
-from sklearn.preprocessing import LabelEncoder  # Import LabelEncoder
+from sklearn.preprocessing import LabelEncoder
+import streamlit as st
 
 # Konfigurasi MinIO
 minio_client = boto3.client(
@@ -51,18 +50,18 @@ def download_batches_from_minio(processed_batches):
             new_batches.append(obj['Key'])
 
     if all_data:
-        return pd.concat(all_data, ignore_index=True), new_batches
+        return pd.concat(all_data, ignore_index=True), new_batches, le
     else:
-        return pd.DataFrame(), []
+        return pd.DataFrame(), [], None
 
 def train_model():
     """Melatih model menggunakan data batch baru dari MinIO."""
     processed_batches = load_processed_batches()
-    data, new_batches = download_batches_from_minio(processed_batches)
+    data, new_batches, le = download_batches_from_minio(processed_batches)
 
     if data.empty:
-        print("Tidak ada batch baru untuk training.")
-        return
+        st.write("Tidak ada batch baru untuk training.")
+        return None, 0, None, None, None
 
     # Memilih fitur dan target
     X = data[['Rooms', 'Type_indexed', 'Distance', 'BuildingArea']]
@@ -75,34 +74,55 @@ def train_model():
     rf_model = RandomForestRegressor(n_estimators=100, random_state=42)
     rf_model.fit(X_train, y_train)
 
-    # Evaluasi Random Forest
+    # Prediksi pada data testing
     y_pred = rf_model.predict(X_test)
-    mse = mean_squared_error(y_test, y_pred)
-    r2 = rf_model.score(X_test, y_test)  # Menghitung R²
-
-    # Menghitung Adjusted R²
-    n = X_test.shape[0]  # Jumlah sampel
-    p = X_test.shape[1]  # Jumlah fitur
-    adjusted_r2 = 1 - ((1 - r2) * (n - 1) / (n - p - 1))
-
-    print(f"Random Forest MSE: {mse}")
-    print(f"Random Forest R²: {r2}")
-    print(f"Random Forest Adjusted R²: {adjusted_r2}")
 
     # Simpan model Random Forest sebagai .pkl
     rf_model_filename = 'random_forest_model.pkl'
     with open(rf_model_filename, 'wb') as file:
         pickle.dump(rf_model, file)
 
-    print("Model Random Forest telah dilatih dan disimpan.")
-
     # Perbarui daftar batch yang telah diproses
     processed_batches.update(new_batches)
     save_processed_batches(processed_batches)
-    print("Daftar batch yang telah diproses diperbarui.")
 
-# Looping untuk memeriksa data baru setiap 10 detik
-while True:
-    train_model()
-    print("Menunggu batch baru...")
-    time.sleep(10)  # Jeda selama 10 detik sebelum memeriksa lagi
+    return y_pred, len(new_batches), y_test.reset_index(drop=True), data[['Type', 'Type_indexed']].drop_duplicates(), le
+
+# Streamlit UI
+st.title("Visualisasi Prediksi Harga Properti")
+st.write("Aplikasi ini melatih model menggunakan data dari MinIO dan menampilkan prediksi harga.")
+
+# Latih model dan dapatkan hasil prediksi
+predicted_prices, batch_count, actual_prices, type_data, label_encoder = train_model()
+
+if predicted_prices is not None:
+    # Tampilkan jumlah batch yang diproses
+    st.subheader("Jumlah Batch Baru yang Diproses")
+    st.write(f"{batch_count} batch baru berhasil diproses.")
+
+    # Membuat DataFrame untuk harga aktual dan prediksi
+    prices_df = pd.DataFrame({
+        "Harga Aktual": actual_prices,
+        "Harga Prediksi": predicted_prices
+    })
+
+    # Tampilkan DataFrame
+    st.subheader("Harga Aktual dan Prediksi")
+    st.dataframe(prices_df)
+
+    # Grafik Harga Aktual vs Prediksi
+    st.subheader("Grafik Harga Aktual vs Prediksi")
+    st.line_chart(prices_df)
+
+    # Menggabungkan dengan nama tipe bangunan
+    # Membuat DataFrame perbandingan harga prediksi dengan tipe bangunan
+    type_data = type_data.merge(prices_df, left_index=True, right_index=True)
+    type_data['Type'] = label_encoder.inverse_transform(type_data['Type_indexed'])
+
+    # Grafik perbandingan harga prediksi per tipe bangunan
+    st.subheader("Grafik Perbandingan Harga Prediksi per Tipe Bangunan")
+    type_group = type_data.groupby('Type').agg({'Harga Prediksi': 'mean'}).reset_index()
+
+    st.bar_chart(type_group.set_index('Type')['Harga Prediksi'])
+else:
+    st.write("Belum ada data baru untuk diproses.")
