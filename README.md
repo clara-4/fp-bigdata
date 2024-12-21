@@ -22,16 +22,16 @@ Final Project ini menggunakan dataset penjualan properti di kota Melbourne, Aust
 3. Setelah itu jalankan kafka dengan menambahkan topic menggunakan command ```docker exec -it kafka kafka-topics.sh --create --topic property-sales --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1```.
 4. Buka localhost MiniO `http://localhost:9090` dan masukkan username = `dua` dan password = `kelompok2`
 5. Buat bucket baru bernama `property-data`
-7. Jalankan [consumer.py](kafka/consumer.py) dan [produser.py](kafka/producer.py)
+6. Jalankan [consumer.py](kafka/consumer.py) dan [produser.py](kafka/producer.py)
 
 ![image](https://github.com/user-attachments/assets/e61f165e-294c-44db-9dd4-ae01173f5bfd)
 
 ![image](https://github.com/user-attachments/assets/64c86c89-3b96-4e8e-b005-e3ab7d5d4fec)
    
-9. Setelah pada consumer terbentuk 1 batch, jalankan [prosesdata.py](data/prosesdata.py)
-10. Pada prosesdata.py data akan dilakukan modeling prediksi harga dengan menggunakan random forest. Adapun kolom-kolom yang digunakan sebagai acuan adalah Rooms, Type, Distance, dan BuildingArea dengan Price sebagai kolom target.
-11. Hasil dari modeling berupa file .pkl yang nantinya akan muncul setelah modeling selesai.
-12. Jalankan app.py yang berisi backend dan index.html yang merupakan frontend
+7. Setelah pada consumer terbentuk 1 batch, jalankan [prosesdata.py](data/prosesdata.py)
+8. Pada prosesdata.py data akan dilakukan modeling prediksi harga dengan menggunakan random forest. Adapun kolom-kolom yang digunakan sebagai acuan adalah Rooms, Type, Distance, dan BuildingArea dengan Price sebagai kolom target.
+9. Hasil dari modeling berupa file .pkl yang nantinya akan muncul setelah modeling selesai dan berupa hasil visualisasi streamlit.
+10. Jalankan app.py yang berisi backend dan index.html yang merupakan frontend
 
 ![image](https://github.com/user-attachments/assets/290920fc-3526-470d-8881-6c6d29db6181)
 
@@ -58,6 +58,20 @@ Output di website:
 ![image](https://github.com/user-attachments/assets/9ed9bb82-70f9-4209-8e72-8e02eb97ae15)
 
 ![image](https://github.com/user-attachments/assets/a0c872d2-278f-437e-868d-798f992ebabe)
+
+## Visualisasi Streamlit
+
+## Tabel
+
+![image](https://github.com/user-attachments/assets/57d17cb3-4edb-499b-a311-78d8a68f2098)
+
+## Grafik 
+
+![Screenshot (688)](https://github.com/user-attachments/assets/052daa07-2176-4a20-befe-1a314de84805)
+
+
+
+
 
 
 
